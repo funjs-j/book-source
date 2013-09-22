@@ -1,134 +1,128 @@
+aVariable = "外";
+
+function aFun() {
+  var aVariable = "内";
+  return _.map([1,2,3], function(e) {
+    var aVariable = "最内";
+    return [aVariable, e].join(' ');
+  });
+}
 
 function makeEmptyObject() {
-  return new Object();
+	return new Object();
 }
 
 var globals = {};
 
 function makeBindFun(resolver) {
-  return function(k, v) {
-    var stack = globals[k] || [];
-    globals[k] = resolver(stack, v);
-    return globals;
-  };
+	return function(k, v) {
+		var stack = globals[k] || [];
+		globals[k] = resolver(stack, v);
+		return globals;
+	};
 }
 
 var stackBinder = makeBindFun(function(stack, v) {
-  stack.push(v);
-  return stack;
+	stack.push(v);
+	return stack;
 });
 
 var stackUnbinder = makeBindFun(function(stack) {
-  stack.pop();
-  return stack;
+	stack.pop();
+	return stack;
 });
 
 var dynamicLookup = function(k) {
-  var slot = globals[k] || [];
-  return _.last(slot);
+	var slot = globals[k] || [];
+	return _.last(slot);
 };
+
 
 function f() { return dynamicLookup('a'); };
 function g() { stackBinder('a', 'g'); return f(); };
 
-f();
-//=> 1
+function globalThis() { return this; }
 
-g();
-//=> 'g'
+var nopeThis = _.bind(globalThis, 'nope');
 
-globals;
-// {a: [1, "g"], b: [100]}
-
-function strangeIdentity(n) {
-  // intentionally strange
-  for(var i=0; i<n; i++);
-  return i;
-}
-
-strangeIdentity(138);
-//=> 138
+var target = {name: '正しい値',
+               aux: function() { return this.name; },
+               act: function() { return this.aux(); }
+};
 
 function strangeIdentity(n) {
-  var i;
-  for(i=0; i<n; i++);
-  return i;
+	// 意図的に変なコードを書いています
+	for(var i=0; i<n; i++);
+	return i;
 }
 
 function strangerIdentity(n) {
-  // intentionally stranger still
-  for(this['i'] = 0; this['i']<n; this['i']++);
-  return this['i'];
+	// ここでも意図的に変なコードを書いています
+	for(this['i'] = 0; this['i']<n; this['i']++);
+	return this['i'];
 }
 
-strangerIdentity(108);
-//=> 108
+function f() {
+	this['a'] = 200;
+	return this['a'] + this['b'];
+}
+
+function whatWasTheLocal() {
+  var CAPTURED = "あ、こんにちは。";
+  return function() {
+    return "ローカル変数：" + CAPTURED;
+  };
+}
+
+var reportLocal = whatWasTheLocal();
 
 function createScaleFunction(FACTOR) {
-  return function(v) {
-    return _.map(v, function(n) {
-      return (n * FACTOR);
-    });
-  };
+	return function(v) {
+		return _.map(v, function(n) {
+			return (n * FACTOR);
+		});
+	};
 }
-
-var scale10 = createScaleFunction(10);
-
-scale10([1,2,3]);
-//=> [10, 20, 30]
 
 function createWeirdScaleFunction(FACTOR) {
-  return function(v) {
-    this['FACTOR'] = FACTOR;
-    var captures = this;
-
-    return _.map(v, _.bind(function(n) {
-      return (n * this['FACTOR']);
-    }, captures));
-  };
+	return function(v) {
+		this['FACTOR'] = FACTOR;
+		var captures = this;
+		return _.map(v, _.bind(function(n) {
+			return (n * this['FACTOR']);
+		}, captures));
+	};
 }
-
-var scale10 = createWeirdScaleFunction(10);
-
-scale10.call({}, [5,6,7]);
-//=> [50, 60, 70];
 
 function makeAdder(CAPTURED) {
-  return function(free) {
-    return free + CAPTURED;
-  };
-}
-
-var add10 = makeAdder(10);
-
-add10(32);
-//=> 42
-
-function averageDamp(FUN) {
-  return function(n) {
-    return average([n, FUN(n)]);
-  }
-}
-
-var averageSq = averageDamp(function(n) { return n * n });
-averageSq(10);
-//=> 55
-
-function complement(PRED) {
-  return function() {
-    return !PRED.apply(null, _.toArray(arguments));
-  };
+	return function(free) {
+		return free + CAPTURED;
+	};
 }
 
 function isEven(n) { return (n%2) === 0 }
-
 var isOdd = complement(isEven);
 
-isOdd(2);
-//=> false
+function showObject(OBJ) {
+  return function() {
+    return OBJ;
+  };
+}
 
-isOdd(413);
-//=> true
+var o = {a: 42};
+var showO = showObject(o);
+
+var pingpong = (function() {
+  var PRIVATE = 0;
+  return {
+    inc: function(n) {
+      return PRIVATE += n;
+    },
+    dec: function(n) {
+      return PRIVATE -= n;
+    }
+  };
+})();
 
 function plucker(FIELD) {
   return function(obj) {
@@ -136,16 +130,8 @@ function plucker(FIELD) {
   };
 }
 
-var best = {title: "Infinite Jest", author: "DFW"};
-
+var bestNovel = {title: "Infinite Jest", author: "DFW"};
 var getTitle = plucker('title');
 
-getTitle(best);
-//=> "Infinite Jest"
-
 var books = [{title: "Chthon"}, {stars: 5}, {title: "Botchan"}];
-
 var third = plucker(2);
-
-third(books);
-//=> {title: "Botchan"}
