@@ -61,3 +61,7 @@ var polyToString = dispatch(
 	function(s) { return _.isArray(s) ? stringifyArray(s) : undefined },
 	function(s) { return _.isObject(s) ? JSON.stringify(s) : undefined },
 	function(s) { return s.toString() });
+
+Container.prototype.toString = function() {
+	return ["@<", polyToString(this._value), ">"].join('');
+}
