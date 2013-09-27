@@ -35,6 +35,17 @@ function isa(type, action) {
 	}
 }
 
+function notify(message) {
+	console.log('notify関数：', message);
+	return true;
+}
+
+
+function changeView(message) {
+	console.log('notify関数：', message);
+	return true;
+}
+
 function performCommandHardcoded(command) {
   var result;
 
