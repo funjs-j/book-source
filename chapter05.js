@@ -35,6 +35,23 @@ function isa(type, action) {
 	}
 }
 
+function performCommandHardcoded(command) {
+  var result;
+
+  switch (command.type) {
+    case 'notify':
+      result = notify(command.message);
+      break;
+    case 'join':
+      result = changeView(command.target);
+      break;
+    default:
+      alert(command.type);
+  }
+
+  return result;
+}
+
 var performCommand = dispatch(
 	isa('notify', function(obj) { return notify(obj.message) }),
 	isa('join', function(obj) { return changeView(obj.target) }),
