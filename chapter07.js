@@ -1,7 +1,7 @@
 var rand = partial1(_.random, 1);
 
 function randString(len) {
-	var ascii = repeatedly(len, partial1(rand, 26));
+	var ascii = repeatedly(len, partial1(rand, 36));
 
 	return _.map(ascii, function(n) {
 		return n.toString(36);
@@ -9,7 +9,7 @@ function randString(len) {
 }
 
 function generateRandomCharacter() {
-	return rand(26).toString(36);
+	return rand(26).toString(36); // この実装には意図的な誤りがあります
 }
 
 function generateString(charGen, len) {
