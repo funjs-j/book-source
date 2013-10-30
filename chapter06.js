@@ -69,10 +69,10 @@ function tcLength(ary, n) {
 		return tcLength(_.rest(ary), l + 1);
 }
 
-function andify(/* preds */) {
+function andify(/* 任意の数のプレディケート関数 */) {
 	var preds = _.toArray(arguments);
 
-	return function(/* args */) {
+	return function(/* 任意の数の引数 */) {
 		var args = _.toArray(arguments);
 
 		var everything = function(ps, truth) {
@@ -88,10 +88,10 @@ function andify(/* preds */) {
 
 var evenNums = andify(_.isNumber, isEven);
 
-function orify(/* preds */) {
+function orify(/* 任意の数のプレディケート関数 */) {
 	var preds = _.toArray(arguments);
 
-	return function(/* args */) {
+	return function(/* 任意の数の引数 */) {
 		var args = _.toArray(arguments);
 
 		var something = function(ps, truth) {
@@ -181,7 +181,7 @@ function oddOline(n) {
 		return partial1(evenOline, Math.abs(n) - 1);
 }
 
-function trampoline(fun /*, args */) {
+function trampoline(fun /*, 任意の数の引数 */) {
 	var result = fun.apply(fun, _.rest(arguments));
 
 	while (_.isFunction(result)) {
