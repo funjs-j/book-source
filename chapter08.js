@@ -27,7 +27,7 @@ function LazyChain(obj) {
 	this._target = obj;
 }
 
-LazyChain.prototype.invoke = function(methodName /*, args */) {
+LazyChain.prototype.invoke = function(methodName /*, 任意の数の引数 */) {
 	var args = _.rest(arguments);
 
 	this._calls.push(function(target) {
@@ -174,7 +174,7 @@ function mNeg() {
 }
 
 var negativeSqrAction = actions([mSqr(), mNote(), mNeg()],
-	function(_, state) {
+	function(notUsed, state) {
 		return state;
 	});
 	
