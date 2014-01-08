@@ -1,6 +1,3 @@
-# Functional JavaScript
+# JavaScriptで学ぶ関数型プログラミング
 
-The official book source for the book, [Functional JavaScript](http://www.functionaljavascript.com) by [Michael Fogus](http://www.fogus.me) from  [O'Reilly](http://shop.oreilly.com/product/0636920028857.do).
-
-### License
-You may use any of his source code under the terms of the MIT License.
+ [JavaScriptで学ぶ関数型プログラミング](http://www.oreilly.co.jp/books/9784873116600/)（原題：[Functional JavaScript](http://www.functionaljavascript.com/)）のサンプルコードです。[Michael Fogus](http://www.fogus.me)氏のコードを一部改変して日本語版書籍準拠にしています。MITライセンス。
